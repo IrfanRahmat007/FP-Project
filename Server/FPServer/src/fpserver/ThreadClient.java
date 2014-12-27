@@ -24,16 +24,23 @@ public class ThreadClient implements Runnable {
     private BufferedOutputStream bos = null;
     private DataInputStream dis = null;
     private SocketAddress sa = null;
+    private statistic roomStat = null;
 
     @Override
     public void run() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    public ThreadClient(Socket sockClient, ArrayList<ThreadClient> alThread)
+    public ThreadClient(Socket sockClient, ArrayList<ThreadClient> allThread, statistic roomStat)
     {
         this.sockClient=sockClient;
         this.alThread=alThread;
         this.sa = sockClient.getRemoteSocketAddress();
+        this.roomStat=roomStat;
+    }
+    
+    public void StatusUpdated()
+    {
+        
     }
 }
