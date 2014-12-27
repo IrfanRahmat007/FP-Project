@@ -10,5 +10,6 @@ package fp;
  * @author ASUS-PC
  */
 public class protokol {
-    
+    int X;
+    int Y;
 }
