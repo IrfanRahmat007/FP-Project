@@ -5,6 +5,8 @@
  */
 package fpserver;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author ASUS-PC
@@ -16,6 +18,8 @@ public class FPServer {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        ArrayList <ArrayList<ThreadClient>> Althread;
+        
     }
     
 }
