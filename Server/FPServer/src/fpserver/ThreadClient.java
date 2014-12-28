@@ -43,4 +43,21 @@ public class ThreadClient implements Runnable {
     {
         
     }
+    public void TurnUpdated()
+    {
+        if (this.roomStat.Status==this.alThread.indexOf(this)+1);
+        {
+            
+        }
+    }
+    
+    public void broadcast()
+    {
+        
+    }
+    
+    public void send()
+    {
+        
+    }
 }

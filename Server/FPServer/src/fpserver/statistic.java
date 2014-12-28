@@ -32,6 +32,7 @@ public class statistic {
         this.Count = new int[3];
         this.Status=1;
         this.Ready=0;
+        this.Turn=1;
         this.TableReady=0;
         this.TableIndex=new int[3];
     }
@@ -89,6 +90,18 @@ public class statistic {
         if(TableIndex[playerIndex]==playerIndex)
         {
             TableIndex[playerIndex]++;
+        }
+    }
+    public void ChangeTurn()
+    {
+        Turn++;
+        if(Turn==3)
+        {
+            Turn=1;
+        }
+        for (int i=0;i<allThread.size();i++)
+        {
+            allThread.get(i).TurnUpdated();
         }
     }
 }
