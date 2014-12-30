@@ -1,5 +1,6 @@
 package fpserver;
 
+import static java.lang.Math.random;
 import java.util.ArrayList;
 
 /*
@@ -18,6 +19,7 @@ public class statistic {
     int TableReady;
     int Turn;
     int Count[];
+    String Username[];
     ArrayList <ThreadClient> allThread;
     int Ready;
     int Status;
@@ -32,9 +34,13 @@ public class statistic {
         this.Count = new int[3];
         this.Status=1;
         this.Ready=0;
-        this.Turn=1;
+        this.Turn=(int)random()%2;
         this.TableReady=0;
+        this.Username=new String[3];
         this.TableIndex=new int[3];
+        this.TableIndex[0]=0;
+        this.TableIndex[1]=0;
+        this.TableIndex[2]=0;
     }
     
     public void UpdateStatus(int status)
@@ -44,6 +50,10 @@ public class statistic {
         {
             allThread.get(i).StatusUpdated();
         }
+    }
+    public void SetUsername(int playerIndex, String Username)
+    {
+        this.Username[playerIndex]=Username;
     }
     public void IncrementReady()
     {
@@ -61,7 +71,7 @@ public class statistic {
             UpdateStatus(4);
         }
     }
-    public void AssignTable(int playerIndex,int X, int Y)
+    public void HideTable(int playerIndex,int X, int Y)
     {
         for(int i=0;i<3;i++)
         {
@@ -82,16 +92,18 @@ public class statistic {
         if(this.Table[TableIndex[playerIndex]][Y][X]==1)
         {
             UpdateWinCounter(playerIndex);
+            SetNewTableIndex(playerIndex);
             return true;
         }
+        ChangeTurn();
         return false;
     }
     public void SetNewTableIndex(int playerIndex)
     {
         TableIndex[playerIndex]++;
-        if(TableIndex[playerIndex]==playerIndex)
+        if(TableIndex[playerIndex]==3)
         {
-            TableIndex[playerIndex]++;
+            TableIndex[playerIndex]=0;
         }
     }
     public void ChangeTurn()
@@ -99,7 +111,7 @@ public class statistic {
         Turn++;
         if(Turn==3)
         {
-            Turn=1;
+            Turn=0;
         }
         for (int i=0;i<allThread.size();i++)
         {

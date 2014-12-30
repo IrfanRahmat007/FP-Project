@@ -25,6 +25,7 @@ import java.util.logging.Logger;
  */
 public class ThreadClient implements Runnable {
 
+    private int playerIndex;
     private Socket sockClient;
     private ArrayList<ThreadClient> alThread;
     private BufferedReader br = null;
@@ -37,8 +38,10 @@ public class ThreadClient implements Runnable {
     @Override
     public void run() {
         try {
+            playerIndex=this.alThread.indexOf(this);
             ous = new ObjectOutputStream(sockClient.getOutputStream());
             ois = new ObjectInputStream(sockClient.getInputStream());
+            SendUserList();
             while(true)
             {
                 Object req;
@@ -47,11 +50,48 @@ public class ThreadClient implements Runnable {
                 {
                     message msg;
                     msg = (message)req;
+                    BroadcastMsg(msg);
                 }
                 else if(req instanceof protokol)
                 {
                     protokol prot;
                     prot=(protokol)req;
+                    switch(prot.getRequest())
+                    {
+                        case 0:
+                            this.roomStat.SetUsername(this.alThread.indexOf(this), prot.getUsername());
+                            break;
+                        case 1:
+                            this.roomStat.IncrementReady();
+                            break;
+                        case 2:
+                            this.roomStat.HideTable(playerIndex, prot.getX(), prot.getY());
+                            break;
+                        case 3:
+                            boolean hasil=this.roomStat.SeekTable(playerIndex, prot.getX(), prot.getY());
+                            if(hasil)
+                            {
+                                this.SendServerMsg("Jawaban Anda Benar");
+                            }
+                            else
+                            {
+                                this.SendServerMsg("Jawaban Anda Salah");
+                            }
+                            break;
+                        case 4:
+                            SendUserList();
+                            break;
+                        case 5:
+                        {
+                            ous.close();
+                            ois.close();
+                            this.sockClient.close();
+                            this.alThread.remove(this);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
                 }
             }
         } catch (IOException ex) {
@@ -72,7 +112,18 @@ public class ThreadClient implements Runnable {
     
     public void StatusUpdated()
     {
-        
+        protokol prot = new protokol();
+        message msg = new message();
+        switch(this.roomStat.Status)
+        {
+            case 1:
+                
+            case 2:
+            
+            case 3:
+                
+            case 4:
+        }
     }
     public void TurnUpdated()
     {
@@ -112,6 +163,23 @@ public class ThreadClient implements Runnable {
         
     public void SendMsg(message msg) throws IOException
     {
+        ous.writeObject(msg);
+        ous.flush();
+        ous.reset();
+    }
+    public void SendUserList() throws IOException
+    {
+        protokol prot1=new protokol();
+        prot1.setResponse(10);
+        String User[]=this.roomStat.Username;
+        prot1.setUser(User);
+        BroadcastStat(prot1);
+    }
+    public void SendServerMsg(String MessageString) throws IOException
+    {
+        message msg=new message();
+        msg.setFrom("Server");
+        msg.setMessageString(MessageString);
         ous.writeObject(msg);
         ous.flush();
         ous.reset();
