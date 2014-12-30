@@ -1,7 +1,10 @@
 package fpserver;
 
-import static java.lang.Math.random;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -35,7 +38,8 @@ public class statistic {
         this.Count = new int[3];
         this.Status=1;
         this.Ready=0;
-        this.Turn=(int)random()%2;
+        Random rand=new Random();
+        this.Turn=rand.nextInt(2);
         this.TableReady=0;
         this.Username=new String[3];
         this.TableIndex=new int[3];
@@ -88,6 +92,14 @@ public class statistic {
                 this.Table[playerIndex][i][j]=0;
             }
         }
+        for (int i=0;i<allThread.size();i++)
+        {
+            try {
+                allThread.get(i).SendServerMsg("Player \'"+this.Username[playerIndex]+"\' telah bersembunyi.");
+            } catch (IOException ex) {
+                Logger.getLogger(statistic.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         this.Table[playerIndex][Y][X]=1;
         TableReady++;
         if(TableReady==3)
@@ -116,6 +128,8 @@ public class statistic {
     }
     public void ChangeTurn()
     {
+    if(Status!=4)
+    {
         Turn++;
         if(Turn==3)
         {
@@ -125,5 +139,22 @@ public class statistic {
         {
             allThread.get(i).TurnUpdated();
         }
+    }
+    }
+    public void ResetStat()
+    {
+        this.Table= new int[3][3][3];
+        this.Count = new int[3];
+        this.Status=1;
+        this.Ready=0;
+        Random rand=new Random();
+        this.Turn=rand.nextInt(2);
+        this.TableReady=0;
+        this.Username=new String[3];
+        this.TableIndex=new int[3];
+        this.TableIndex[0]=0;
+        this.TableIndex[1]=0;
+        this.TableIndex[2]=0;
+        this.Winner=-1;
     }
 }

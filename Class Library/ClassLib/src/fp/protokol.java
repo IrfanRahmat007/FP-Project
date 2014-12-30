@@ -35,13 +35,14 @@ public class protokol implements Serializable{
     Response :
     10. New User
     11. Waiting for ready
-    11. Hide
     12. Skor
-    13. Wait
-    14. Go
-    15. Notifikasi
-    16. Finish
-    17. Disconnect
+    13. Hide
+    14. Wait
+    15. Go
+    16. Finish Kalah
+    17. Finish Menang
+    18. Disconnect
+    19. Request Disconnect
     */
 
     /**
@@ -166,13 +167,14 @@ public class protokol implements Serializable{
      * @param Response the Response to set
      * 10. New User
      * 11. Waiting for ready
-     * 11. Confirm
      * 12. Skor
      * 13. Hide
-     * 14. Wait
-     * 15. Go
-     * 16. Connected
-     * 17. Finish
+     * 14. Hide
+     * 15. Wait
+     * 16. Go
+     * 17. Finish Menang
+     * 18. Finish Kalah
+     * 19. Request Disconnect
      */
     public void setResponse(int Response) {
         this.Response = Response;

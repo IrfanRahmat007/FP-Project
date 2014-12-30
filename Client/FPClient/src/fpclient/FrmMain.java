@@ -44,6 +44,9 @@ public class FrmMain extends javax.swing.JFrame {
         DefaultCaret caret = (DefaultCaret)this.TxtLog.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         DisableNonGame();
+        Status=1;
+        X=-1;
+        Y=-1;
         CmdDisconnect.setEnabled(false);
     }
 
@@ -311,6 +314,10 @@ public class FrmMain extends javax.swing.JFrame {
     }//GEN-LAST:event_CmdReadyActionPerformed
 
     private void CmdConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CmdConnectActionPerformed
+        TxtLog.setText("");
+        TxtChat.setText("");
+        TxtUserName.setText("");
+        TxtSkor.setText("");
         try {
             // TODO add your handling code here:
             System.out.println("Masuk connect");
@@ -336,10 +343,9 @@ public class FrmMain extends javax.swing.JFrame {
         try {
             SendRequest(prot);
             DisableNonGame();
-            TxtLog.setText("");
-            TxtChat.setText("");
-            TxtUserName.setText("");
-            TxtSkor.setText("");
+            Status=1;
+            X=-1;
+            Y=-1;
             CmdConnect.setEnabled(true);
             CmdDisconnect.setEnabled(false);
         } catch (IOException ex) {
@@ -383,7 +389,7 @@ public class FrmMain extends javax.swing.JFrame {
         }
         else if(Status==3)
         {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         }
         else if(Status==4)
         {
@@ -395,7 +401,7 @@ public class FrmMain extends javax.swing.JFrame {
         }
         else
         {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n\n");
         }
     }//GEN-LAST:event_CMD00ActionPerformed
 
@@ -408,7 +414,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(1, 0);
@@ -416,7 +422,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD01ActionPerformed
 
@@ -429,7 +435,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(2, 0);
@@ -437,7 +443,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD02ActionPerformed
 
@@ -450,7 +456,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(0, 1);
@@ -458,7 +464,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD10ActionPerformed
 
@@ -471,7 +477,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(1, 1);
@@ -479,7 +485,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD11ActionPerformed
 
@@ -492,7 +498,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(2, 1);
@@ -500,7 +506,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD12ActionPerformed
 
@@ -513,7 +519,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(0, 2);
@@ -521,7 +527,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD20ActionPerformed
 
@@ -534,7 +540,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(1, 2);
@@ -542,7 +548,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD21ActionPerformed
 
@@ -555,7 +561,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if (Status == 3) {
-            WriteLog("This turn is not your turn!");
+            WriteLog("This turn is not your turn!\n");
         } else if (Status == 4) {
             try {
                 Seek(2, 2);
@@ -563,7 +569,7 @@ public class FrmMain extends javax.swing.JFrame {
                 Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            WriteLog("Game has not started yet!!!");
+            WriteLog("Game has not started yet!!!\n");
         }
     }//GEN-LAST:event_CMD22ActionPerformed
 
@@ -699,10 +705,14 @@ public class FrmMain extends javax.swing.JFrame {
                 EnableButton();
                 break;
             case 3:
+                DisableButton();
                 break;
             case 4:
+                EnableButton();
                 break;
             case 5:
+                DisableButton();
+                CmdDisconnect.doClick();
                 break;
             default:
                 break;

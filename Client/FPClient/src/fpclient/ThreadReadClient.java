@@ -52,19 +52,37 @@ public class ThreadReadClient extends Thread{
                     switch(prot.getResponse())
                     {
                         case 11:
-                            MainForm.Status=2;
+                            MainForm.Status=1;
                             MainForm.StatusUpdated();
                             break;
                         case 12:
                             this.MainForm.UpdateScore(prot.getUser(), prot.getSkor());
                             break;
                         case 13:
+                            MainForm.Status=2;
+                            MainForm.StatusUpdated();
                             break;
                         case 14:
+                            MainForm.Status=3;
+                            MainForm.StatusUpdated();
                             break;
                         case 15:
+                            MainForm.Status=4;
+                            MainForm.StatusUpdated();
+                            break;
+                        case 16:
+                            MainForm.Status = 5;
+                            MainForm.StatusUpdated();
+                            break;
                         case 17:
+                            MainForm.Status = 5;
+                            MainForm.StatusUpdated();
+                        case 18:
                             this.sock.close();
+                            break;
+                        case 19:
+                            MainForm.Status = 5;
+                            MainForm.StatusUpdated();
                             break;
                         case 10:
                             ListUser(prot);

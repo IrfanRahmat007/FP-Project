@@ -75,9 +75,12 @@ public class ThreadClient implements Runnable {
                         case 1:
                             if(this.ready==0)
                             {
-                                this.roomStat.IncrementReady();
+                                protokol prot1=new protokol();
+                                prot1.setResponse(11);
+                                SendStat(prot);
                                 BroadcastServerMsg("Player \'" + this.roomStat.Username[playerIndex] + "\' is ready");
-                                ready=1;
+                                this.roomStat.IncrementReady();
+                                this.ready=1;
                             }
                             else
                             {
@@ -91,11 +94,17 @@ public class ThreadClient implements Runnable {
                             boolean hasil=this.roomStat.SeekTable(playerIndex, prot.getX(), prot.getY());
                             if(hasil)
                             {
-                                this.SendServerMsg("Jawaban Anda Benar");
+                                this.SendServerMsg("Tebakan anda benar");
+                                if(this.roomStat.Status!=4)
+                                {
+                                    this.BroadcastServerMsg("Player \'" + this.roomStat.Username[playerIndex] + "\' berhasil menebak posisi lawan");
+                                    this.roomStat.ChangeTurn();
+                                }
                             }
                             else
                             {
-                                this.SendServerMsg("Jawaban Anda Salah");
+                                this.SendServerMsg("Tebakan anda salah");
+                                this.BroadcastServerMsg("Tebakan Player \'" + this.roomStat.Username[playerIndex] + "\' salah");
                             }
                             break;
                         case 4:
@@ -103,13 +112,8 @@ public class ThreadClient implements Runnable {
                             break;
                         case 5:
                         {
-                            SendServerMsg("Disconnected from server.");
-                            protokol prot1=new protokol();
-                            prot1.setResponse(17);
-                            SendStat(prot1);
-                            ous.close();
-                            ois.close();
-                            this.sockClient.close();
+                            DestroyConnection();
+                            DestroyRoom();
                             break;
                         }
                         default:
@@ -123,7 +127,6 @@ public class ThreadClient implements Runnable {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("Disconnected");
-        this.alThread.remove(this);
     }
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> allThread, statistic roomStat)
@@ -145,9 +148,9 @@ public class ThreadClient implements Runnable {
             case 1:
                 break;
             case 2:
-                prot.setResponse(11);
+                prot.setResponse(13);
                 try {
-                    BroadcastServerMsg("All Player are ready. Please choose a button to hide");
+                    SendServerMsg("All Player are ready. Please choose a button to hide");
                     SendStat(prot);
                 } catch (IOException ex) {
                     Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -156,7 +159,7 @@ public class ThreadClient implements Runnable {
             case 3:
                 {
                     try {
-                        BroadcastServerMsg("All Player are have gone into hiding. Please wait for your turn");
+                        SendServerMsg("All Player are have gone into hiding. Please wait for your turn");
                     } catch (IOException ex) {
                         Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -167,9 +170,22 @@ public class ThreadClient implements Runnable {
                 int winner=this.roomStat.Winner;
                 if(winner==this.alThread.indexOf(this))
                 {
-                     prot.setResponse(17);
-                     prot.setPemenang(winner);
+                    prot.setResponse(17);
+                    prot.setPemenang(winner);
                     try {
+                        SendServerMsg("Anda Menang!!!");
+                        BroadcastServerMsg("Selamat kepada player \'"+this.roomStat.Username[playerIndex]+"\' yang telah berhasil memenangkan pertandingan!");
+                        SendStat(prot);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    prot.setResponse(16);
+                    prot.setPemenang(winner);
+                    try {
+                        SendServerMsg("Anda Kalah.");
                         SendStat(prot);
                     } catch (IOException ex) {
                         Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -179,11 +195,12 @@ public class ThreadClient implements Runnable {
     }
     public void TurnUpdated()
     {
-        if (this.roomStat.Status==this.alThread.indexOf(this)+1)
+        if (this.roomStat.Turn==this.alThread.indexOf(this))
         {
             protokol prot = new protokol();
             prot.setResponse(15);
             try {
+                SendServerMsg("Sekarang giliran anda.");
                 SendStat(prot);
             } catch (IOException ex) {
                 Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -195,6 +212,7 @@ public class ThreadClient implements Runnable {
             prot.setResponse(14);
             prot.setTurn(this.roomStat.Turn);
             try {
+                SendServerMsg("Sekarang giliran player \'"+this.roomStat.Username[this.roomStat.Turn]);
                 SendStat(prot);
             } catch (IOException ex) {
                 Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
@@ -266,5 +284,32 @@ public class ThreadClient implements Runnable {
         {
             this.alThread.get(i).SendServerMsg(MessageString);
         }
+    }
+    
+    public void DestroyConnection() throws IOException
+    {
+        SendServerMsg("Disconnected from server.");
+        protokol prot1 = new protokol();
+        prot1.setResponse(17);
+        SendStat(prot1);
+        this.ous.close();
+        this.ois.close();
+        this.sockClient.close();
+        this.alThread.remove(this);
+    }
+    public void RequestDestroyConnection() throws IOException
+    {
+        protokol prot1 = new protokol();
+        prot1.setResponse(19);
+        SendStat(prot1);
+    }
+    public void DestroyRoom() throws IOException
+    {
+        BroadcastServerMsg("Player insufficient. Destroying room and stat...");
+        for(int i=0;i<this.alThread.size();i++)
+        {
+            this.alThread.get(i).RequestDestroyConnection();
+        }
+        this.roomStat.ResetStat();
     }
 }
