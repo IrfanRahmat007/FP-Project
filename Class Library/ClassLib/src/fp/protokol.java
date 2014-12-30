@@ -21,6 +21,7 @@ public class protokol implements Serializable{
     private String username;
     private int Request;
     private int Response;
+    private int Skor[];
     /*
     Request : 
     0. Username
@@ -39,7 +40,7 @@ public class protokol implements Serializable{
     13. Wait
     14. Go
     15. Notifikasi
-    16. Winner
+    16. Finish
     
     */
 
@@ -157,6 +158,15 @@ public class protokol implements Serializable{
 
     /**
      * @param Response the Response to set
+     * 10. New User
+     * 11. Waiting for ready
+     * 11. Confirm
+     * 12. Skor
+     * 13. Hide
+     * 14. Wait
+     * 15. Go
+     * 16. Connected
+     * 17. Finish
      */
     public void setResponse(int Response) {
         this.Response = Response;
@@ -174,6 +184,20 @@ public class protokol implements Serializable{
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * @return the Skor
+     */
+    public int[] getSkor() {
+        return Skor;
+    }
+
+    /**
+     * @param Skor the Skor to set
+     */
+    public void setSkor(int[] Skor) {
+        this.Skor = Skor;
     }
     
     

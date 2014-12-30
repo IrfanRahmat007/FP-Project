@@ -19,6 +19,7 @@ public class statistic {
     int TableReady;
     int Turn;
     int Count[];
+    int Winner;
     String Username[];
     ArrayList <ThreadClient> allThread;
     int Ready;
@@ -41,6 +42,7 @@ public class statistic {
         this.TableIndex[0]=0;
         this.TableIndex[1]=0;
         this.TableIndex[2]=0;
+        this.Winner=-1;
     }
     
     public void UpdateStatus(int status)
@@ -66,9 +68,15 @@ public class statistic {
     public void UpdateWinCounter(int playerIndex)
     {
         this.Count[playerIndex]++;
+        for (int i=0;i<allThread.size();i++)
+        {
+            allThread.get(i).CountUpdated();
+        }
         if(this.Count[playerIndex]==2)
         {
+            this.Winner=playerIndex;
             UpdateStatus(4);
+            
         }
     }
     public void HideTable(int playerIndex,int X, int Y)

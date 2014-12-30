@@ -42,6 +42,7 @@ public class ThreadClient implements Runnable {
             ous = new ObjectOutputStream(sockClient.getOutputStream());
             ois = new ObjectInputStream(sockClient.getInputStream());
             SendUserList();
+            SendServerMsg("Waiting for user...");
             while(true)
             {
                 Object req;
@@ -117,27 +118,68 @@ public class ThreadClient implements Runnable {
         switch(this.roomStat.Status)
         {
             case 1:
-                
+                break;
             case 2:
-            
+                prot.setResponse(13);
+                try {
+                    SendStat(prot);
+                } catch (IOException ex) {
+                    Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
             case 3:
-                
+                TurnUpdated();
             case 4:
+                int winner=this.roomStat.Winner;
+                if(winner==this.alThread.indexOf(this))
+                {
+                     prot.setResponse(17);
+                     prot.setPemenang(winner);
+                    try {
+                        SendStat(prot);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
         }
     }
     public void TurnUpdated()
     {
-        if (this.roomStat.Status==this.alThread.indexOf(this)+1);
+        if (this.roomStat.Status==this.alThread.indexOf(this)+1)
         {
-            
+            protokol prot = new protokol();
+            prot.setResponse(15);
+            try {
+                SendStat(prot);
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        else
+        {
+            protokol prot = new protokol();
+            prot.setResponse(14);
+            prot.setTurn(this.roomStat.Turn);
+            try {
+                SendStat(prot);
+            } catch (IOException ex) {
+                Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         }
     }
     
-    public void WinUpdated()
+    public void CountUpdated()
     {
-        
+        protokol prot = new protokol();
+        prot.setResponse(12);
+        prot.setSkor(this.roomStat.Count);
+        prot.setUser(this.roomStat.Username);
+        try {
+            SendStat(prot);
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
-    
     public void BroadcastStat(protokol prot) throws IOException
     {
         for(int i=0;i<this.alThread.size();i++)
