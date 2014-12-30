@@ -35,13 +35,13 @@ public class protokol implements Serializable{
     Response :
     10. New User
     11. Waiting for ready
-    11. Confirm
+    11. Hide
     12. Skor
     13. Wait
     14. Go
     15. Notifikasi
     16. Finish
-    
+    17. Disconnect
     */
 
     /**
@@ -144,6 +144,12 @@ public class protokol implements Serializable{
 
     /**
      * @param Request the Request to set
+     * 0. Username
+     * 1. Ready
+     * 2. Hide
+     * 3. Seek
+     * 4. User
+     * 5. Disconnect
      */
     public void setRequest(int Request) {
         this.Request = Request;

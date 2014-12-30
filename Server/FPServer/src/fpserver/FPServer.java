@@ -27,44 +27,44 @@ public class FPServer {
         ObjectInputStream ois=null;
         ObjectOutputStream ous=null;
         ArrayList <ArrayList<ThreadClient>> rooms=new ArrayList();
-        ArrayList <ThreadClient> allThread = null;
-        statistic roomStat=null;
-        try {
-            // TODO code application logic here
-            
-            ServerSocket server = new ServerSocket(6060);
-            Socket socket = server.accept();
+        ArrayList <ThreadClient> allThread = new ArrayList();
+        statistic roomStat=new statistic(allThread);
+        try 
+        {
             System.out.println("Menunggu panggilan...");
+            ServerSocket server = new ServerSocket(6060);
             while(true)
             {
-                if(allThread==null)
-                {
-                    allThread=new ArrayList();
-                    roomStat=new statistic(allThread);
+                // TODO code application logic here
+                Socket sockClient = server.accept();
+                System.out.println("Ada yg masuk");
+                if (allThread.equals(null)) {
+                    System.out.println("Allthread null");
+                    allThread = new ArrayList();
+                    roomStat = new statistic(allThread);
                     rooms.add(allThread);
-                }
-                else
-                {
-                    if (allThread.size()==3)
-                    {
-                        allThread=new ArrayList();
-                        roomStat=new statistic(allThread);
+                } else {
+                    System.out.println("Allthread !Null");
+                    if (allThread.size() == 3) {
+                        allThread = new ArrayList();
+                        roomStat = new statistic(allThread);
                         rooms.add(allThread);
                     }
                 }
-                Socket sockClient = server.accept();
-                System.out.println(sockClient.getInetAddress().toString()+" masuk\r\n");
-                
-                synchronized(allThread)
-                {
-                    ThreadClient tc = new ThreadClient(sockClient,allThread,roomStat);
+                System.out.println(sockClient.getInetAddress().toString() + " masuk\r\n");
+
+                synchronized (allThread) {
+                    System.out.println("Bikin Thread");
+                    ThreadClient tc = new ThreadClient(sockClient, allThread, roomStat);
+                    System.out.println("Sukses Bikin Thread");
                     allThread.add(tc);
+                    System.out.println("Tambah thread ke allThread");
                     Thread t = new Thread(tc);
                     t.start();
-                }
+                }   
             }
-
-        } catch (IOException ex) {
+        } 
+        catch (IOException ex) {
             Logger.getLogger(FPServer.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             try {
@@ -73,7 +73,6 @@ public class FPServer {
                 Logger.getLogger(FPServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
     }
     
 }

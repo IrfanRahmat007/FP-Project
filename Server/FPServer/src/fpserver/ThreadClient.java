@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 public class ThreadClient implements Runnable {
 
     private int playerIndex;
+    private int ready;
     private Socket sockClient;
     private ArrayList<ThreadClient> alThread;
     private BufferedReader br = null;
@@ -38,12 +39,18 @@ public class ThreadClient implements Runnable {
     @Override
     public void run() {
         try {
+            System.out.println("Masuk Thread");
             playerIndex=this.alThread.indexOf(this);
+            System.out.println("playerIndex");
+            this.roomStat.SetUsername(playerIndex,"Player "+playerIndex);
             ous = new ObjectOutputStream(sockClient.getOutputStream());
             ois = new ObjectInputStream(sockClient.getInputStream());
-            SendUserList();
             SendServerMsg("Waiting for user...");
-            while(true)
+            SendUserList();
+            CountUpdated();
+            System.out.println("Berhasil mengirim user list");
+            System.out.println("Client "+playerIndex+" connected\n");
+            while(!this.sockClient.isClosed())
             {
                 Object req;
                 req=ois.readObject();
@@ -51,6 +58,7 @@ public class ThreadClient implements Runnable {
                 {
                     message msg;
                     msg = (message)req;
+                    msg.setFrom(this.roomStat.Username[playerIndex]);
                     BroadcastMsg(msg);
                 }
                 else if(req instanceof protokol)
@@ -61,9 +69,20 @@ public class ThreadClient implements Runnable {
                     {
                         case 0:
                             this.roomStat.SetUsername(this.alThread.indexOf(this), prot.getUsername());
+                            SendServerMsg("Username changed to : "+prot.getUsername());
+                            CountUpdated();
                             break;
                         case 1:
-                            this.roomStat.IncrementReady();
+                            if(this.ready==0)
+                            {
+                                this.roomStat.IncrementReady();
+                                BroadcastServerMsg("Player \'" + this.roomStat.Username[playerIndex] + "\' is ready");
+                                ready=1;
+                            }
+                            else
+                            {
+                                BroadcastServerMsg("Player \'" + this.roomStat.Username[playerIndex] + "\' is requesting all player to be ready");
+                            }
                             break;
                         case 2:
                             this.roomStat.HideTable(playerIndex, prot.getX(), prot.getY());
@@ -84,10 +103,13 @@ public class ThreadClient implements Runnable {
                             break;
                         case 5:
                         {
+                            SendServerMsg("Disconnected from server.");
+                            protokol prot1=new protokol();
+                            prot1.setResponse(17);
+                            SendStat(prot1);
                             ous.close();
                             ois.close();
                             this.sockClient.close();
-                            this.alThread.remove(this);
                             break;
                         }
                         default:
@@ -100,13 +122,16 @@ public class ThreadClient implements Runnable {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+        System.out.println("Disconnected");
+        this.alThread.remove(this);
     }
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> allThread, statistic roomStat)
     {
+        this.ready=0;
+        this.playerIndex=0;
         this.sockClient=sockClient;
-        this.alThread=alThread;
+        this.alThread=allThread;
         this.sa = sockClient.getRemoteSocketAddress();
         this.roomStat=roomStat;
     }
@@ -120,15 +145,24 @@ public class ThreadClient implements Runnable {
             case 1:
                 break;
             case 2:
-                prot.setResponse(13);
+                prot.setResponse(11);
                 try {
+                    BroadcastServerMsg("All Player are ready. Please choose a button to hide");
                     SendStat(prot);
                 } catch (IOException ex) {
                     Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 break;
             case 3:
+                {
+                    try {
+                        BroadcastServerMsg("All Player are have gone into hiding. Please wait for your turn");
+                    } catch (IOException ex) {
+                        Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
                 TurnUpdated();
+                break;
             case 4:
                 int winner=this.roomStat.Winner;
                 if(winner==this.alThread.indexOf(this))
@@ -175,7 +209,7 @@ public class ThreadClient implements Runnable {
         prot.setSkor(this.roomStat.Count);
         prot.setUser(this.roomStat.Username);
         try {
-            SendStat(prot);
+            BroadcastStat(prot);
         } catch (IOException ex) {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -225,5 +259,12 @@ public class ThreadClient implements Runnable {
         ous.writeObject(msg);
         ous.flush();
         ous.reset();
+    }
+    public void BroadcastServerMsg(String MessageString) throws IOException
+    {
+        for(int i=0;i<this.alThread.size();i++)
+        {
+            this.alThread.get(i).SendServerMsg(MessageString);
+        }
     }
 }
