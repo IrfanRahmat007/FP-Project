@@ -5,12 +5,19 @@
  */
 package fpserver;
 
+import fp.message;
+import fp.protokol;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,10 +32,17 @@ public class ThreadClient implements Runnable {
     private DataInputStream dis = null;
     private SocketAddress sa = null;
     private statistic roomStat = null;
-
+    private ObjectInputStream ois=null;
+    private ObjectOutputStream ous=null;
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            ous = new ObjectOutputStream(sockClient.getOutputStream());
+            ois = new ObjectInputStream(sockClient.getInputStream());
+        } catch (IOException ex) {
+            Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
     
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> allThread, statistic roomStat)
@@ -51,13 +65,33 @@ public class ThreadClient implements Runnable {
         }
     }
     
-    public void broadcast()
+    public void BroadcastStat(protokol prot) throws IOException
     {
-        
+        for(int i=0;i<this.alThread.size();i++)
+        {
+            this.alThread.get(i).SendStat(prot);
+        }
     }
     
-    public void send()
+    public void SendStat(protokol prot) throws IOException
     {
+        ous.writeObject(prot);
+        ous.flush();
+        ous.reset();
+
+    }
+    public void BroadcastMsg(message msg) throws IOException
+    {
+        for(int i=0;i<this.alThread.size();i++)
+        {
+            this.alThread.get(i).SendMsg(msg);
+        }
+    }
         
+    public void SendMsg(message msg) throws IOException
+    {
+        ous.writeObject(msg);
+        ous.flush();
+        ous.reset();
     }
 }

@@ -34,8 +34,6 @@ public class FPServer {
             
             ServerSocket server = new ServerSocket(6060);
             Socket socket = server.accept();
-            ous = new ObjectOutputStream(socket.getOutputStream());
-            ois = new ObjectInputStream(socket.getInputStream());
             System.out.println("Menunggu panggilan...");
             while(true)
             {
