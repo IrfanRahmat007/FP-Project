@@ -20,7 +20,21 @@ public class protokol implements Serializable{
     int pemain;
     String user[];
     int Request;
+    /*
+    1. Ready
+    2. Hide
+    3. Seek
+    4. Disconnect
+    */
     int Response;
+    /*
+    1. Confirm
+    2. Skor
+    3. Izin
+    4. Notifikasi
+    3. Winner
+    
+    */
     
     
 }

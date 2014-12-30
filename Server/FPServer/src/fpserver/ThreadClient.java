@@ -39,7 +39,24 @@ public class ThreadClient implements Runnable {
         try {
             ous = new ObjectOutputStream(sockClient.getOutputStream());
             ois = new ObjectInputStream(sockClient.getInputStream());
+            while(true)
+            {
+                Object req;
+                req=ois.readObject();
+                if(req instanceof message)
+                {
+                    message msg;
+                    msg = (message)req;
+                }
+                else if(req instanceof protokol)
+                {
+                    protokol prot;
+                    prot=(protokol)req;
+                }
+            }
         } catch (IOException ex) {
+            Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
             Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
         }
         
@@ -63,6 +80,11 @@ public class ThreadClient implements Runnable {
         {
             
         }
+    }
+    
+    public void WinUpdated()
+    {
+        
     }
     
     public void BroadcastStat(protokol prot) throws IOException

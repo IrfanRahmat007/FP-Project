@@ -77,12 +77,14 @@ public class statistic {
             UpdateStatus(3);
         }
     }
-    public void SeekTable(int playerIndex, int X, int Y)
+    public boolean SeekTable(int playerIndex, int X, int Y)
     {
         if(this.Table[TableIndex[playerIndex]][Y][X]==1)
         {
             UpdateWinCounter(playerIndex);
+            return true;
         }
+        return false;
     }
     public void SetNewTableIndex(int playerIndex)
     {
