@@ -352,12 +352,7 @@ public class FrmMain extends javax.swing.JFrame {
         prot.setRequest(5);
         try {
             SendRequest(prot);
-            DisableNonGame();
-            Status=1;
-            X=-1;
-            Y=-1;
-            CmdConnect.setEnabled(true);
-            CmdDisconnect.setEnabled(false);
+            ResetUI();
         } catch (IOException ex) {
             Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -619,6 +614,15 @@ public class FrmMain extends javax.swing.JFrame {
         });
     }
     
+    public void ResetUI()
+    {
+            DisableNonGame();
+            Status=1;
+            X=-1;
+            Y=-1;
+            CmdConnect.setEnabled(true);
+            CmdDisconnect.setEnabled(false);
+    }
     public void WriteLog(String log)
     {
         this.TxtLog.append(log);

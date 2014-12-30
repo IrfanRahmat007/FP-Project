@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  */
 public class statistic {
     int Table[][][];
+    int Incomplete;
     int TableIndex[];
     int TableReady;
     int Turn;
@@ -47,6 +48,7 @@ public class statistic {
         this.TableIndex[1]=0;
         this.TableIndex[2]=0;
         this.Winner=-1;
+        this.Incomplete=0;
     }
     
     public void UpdateStatus(int status)
@@ -156,5 +158,6 @@ public class statistic {
         this.TableIndex[1]=0;
         this.TableIndex[2]=0;
         this.Winner=-1;
+        this.Incomplete=0;
     }
 }

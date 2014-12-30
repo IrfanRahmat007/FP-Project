@@ -5,3 +5,5 @@
 /Server/FPClient/build/
 /Class Library/ClassLib/build/
 /Server/FPServer/build/
+/Class Library/ClassLib/dist/
+/Client/FPClient/dist/

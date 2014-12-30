@@ -78,11 +78,11 @@ public class ThreadReadClient extends Thread{
                             MainForm.Status = 5;
                             MainForm.StatusUpdated();
                         case 18:
+                            protokol prot1=new protokol();
+                            prot1.setRequest(6);
+                            MainForm.SendRequest(prot1);
                             this.sock.close();
-                            break;
-                        case 19:
-                            MainForm.Status = 5;
-                            MainForm.StatusUpdated();
+                            MainForm.ResetUI();
                             break;
                         case 10:
                             ListUser(prot);

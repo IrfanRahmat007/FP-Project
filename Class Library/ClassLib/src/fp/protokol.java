@@ -169,12 +169,10 @@ public class protokol implements Serializable{
      * 11. Waiting for ready
      * 12. Skor
      * 13. Hide
-     * 14. Hide
-     * 15. Wait
-     * 16. Go
-     * 17. Finish Menang
-     * 18. Finish Kalah
-     * 19. Request Disconnect
+     * 14. Wait
+     * 15. Go
+     * 16. Finish Menang
+     * 17. Finish Kalah
      */
     public void setResponse(int Response) {
         this.Response = Response;

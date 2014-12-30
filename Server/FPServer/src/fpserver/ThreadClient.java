@@ -28,6 +28,7 @@ public class ThreadClient implements Runnable {
     private int playerIndex;
     private int ready;
     private Socket sockClient;
+    private int finish;
     private ArrayList<ThreadClient> alThread;
     private BufferedReader br = null;
     private BufferedOutputStream bos = null;
@@ -112,9 +113,20 @@ public class ThreadClient implements Runnable {
                             break;
                         case 5:
                         {
-                            DestroyConnection();
-                            DestroyRoom();
+                            
+                            if(finish==0)
+                            {
+                                BroadcastServerMsg("Player insufficient. Resetting room and stat...");
+                            }
+                            for (int i = 0; i < this.alThread.size(); i++) {
+                                this.alThread.get(i).SendCloseConnection();
+                            }
+                            this.roomStat.ResetStat();
                             break;
+                        }
+                        case 6:
+                        {
+                            Disconnect();
                         }
                         default:
                             break;
@@ -137,6 +149,7 @@ public class ThreadClient implements Runnable {
         this.alThread=allThread;
         this.sa = sockClient.getRemoteSocketAddress();
         this.roomStat=roomStat;
+        this.finish=0;
     }
     
     public void StatusUpdated()
@@ -173,6 +186,7 @@ public class ThreadClient implements Runnable {
                     prot.setResponse(17);
                     prot.setPemenang(winner);
                     try {
+                        finish=1;
                         SendServerMsg("Anda Menang!!!");
                         BroadcastServerMsg("Selamat kepada player \'"+this.roomStat.Username[playerIndex]+"\' yang telah berhasil memenangkan pertandingan!");
                         SendStat(prot);
@@ -185,6 +199,7 @@ public class ThreadClient implements Runnable {
                     prot.setResponse(16);
                     prot.setPemenang(winner);
                     try {
+                        finish=1;
                         SendServerMsg("Anda Kalah.");
                         SendStat(prot);
                     } catch (IOException ex) {
@@ -286,30 +301,25 @@ public class ThreadClient implements Runnable {
         }
     }
     
-    public void DestroyConnection() throws IOException
+    public void SendCloseConnection() throws IOException
     {
-        SendServerMsg("Disconnected from server.");
+        if(finish==0)
+        {
+            SendServerMsg("Disconnected from server.");
+        }
         protokol prot1 = new protokol();
-        prot1.setResponse(17);
+        prot1.setResponse(18);
         SendStat(prot1);
+    }
+    
+    public void Disconnect() throws IOException
+    {
         this.ous.close();
         this.ois.close();
         this.sockClient.close();
+        this.roomStat.Username[playerIndex] = null;
+        this.roomStat.TableIndex[playerIndex] = 0;
+        this.roomStat.Count[playerIndex] = 0;
         this.alThread.remove(this);
-    }
-    public void RequestDestroyConnection() throws IOException
-    {
-        protokol prot1 = new protokol();
-        prot1.setResponse(19);
-        SendStat(prot1);
-    }
-    public void DestroyRoom() throws IOException
-    {
-        BroadcastServerMsg("Player insufficient. Destroying room and stat...");
-        for(int i=0;i<this.alThread.size();i++)
-        {
-            this.alThread.get(i).RequestDestroyConnection();
-        }
-        this.roomStat.ResetStat();
     }
 }
