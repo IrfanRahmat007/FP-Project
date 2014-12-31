@@ -12,7 +12,6 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTextArea;
 
 /**
  *
@@ -21,7 +20,6 @@ import javax.swing.JTextArea;
 public class ThreadReadClient extends Thread{
     private Socket sock;
     private ObjectInputStream ois;
-    private JTextArea txtReceived;
     FrmMain MainForm;
     public ThreadReadClient(Socket sock, ObjectInputStream ois, FrmMain MainForm)
     {

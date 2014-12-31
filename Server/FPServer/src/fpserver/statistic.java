@@ -78,7 +78,7 @@ public class statistic {
         {
             allThread.get(i).CountUpdated();
         }
-        if(this.Count[playerIndex]==2)
+        if(this.Count[playerIndex]==3)
         {
             this.Winner=playerIndex;
             UpdateStatus(4);

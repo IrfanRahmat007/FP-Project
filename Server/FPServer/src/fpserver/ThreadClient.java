@@ -29,6 +29,7 @@ public class ThreadClient implements Runnable {
     private int ready;
     private Socket sockClient;
     private int finish;
+    private int hidden;
     private ArrayList<ThreadClient> alThread;
     private BufferedReader br = null;
     private BufferedOutputStream bos = null;
@@ -89,7 +90,15 @@ public class ThreadClient implements Runnable {
                             }
                             break;
                         case 2:
-                            this.roomStat.HideTable(playerIndex, prot.getX(), prot.getY());
+                            if(this.hidden==0)
+                            {
+                                hidden=1;
+                                this.roomStat.HideTable(playerIndex, prot.getX(), prot.getY());
+                            }
+                            else
+                            {
+                                SendServerMsg("Anda telah memilih tenpat persembunyian!");
+                            }
                             break;
                         case 3:
                             boolean hasil=this.roomStat.SeekTable(playerIndex, prot.getX(), prot.getY());
@@ -144,6 +153,7 @@ public class ThreadClient implements Runnable {
     public ThreadClient(Socket sockClient, ArrayList<ThreadClient> allThread, statistic roomStat)
     {
         this.ready=0;
+        this.hidden=0;
         this.playerIndex=0;
         this.sockClient=sockClient;
         this.alThread=allThread;

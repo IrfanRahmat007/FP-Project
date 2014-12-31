@@ -31,6 +31,7 @@ public class FrmMain extends javax.swing.JFrame {
     int Status;
     private int X;
     private int Y;
+    private int ready;
     private Socket sock;
     private ObjectOutputStream ous;
     private ObjectInputStream ois;
@@ -47,6 +48,7 @@ public class FrmMain extends javax.swing.JFrame {
         Status=1;
         X=-1;
         Y=-1;
+        ready=0;
         CmdDisconnect.setEnabled(false);
     }
 
@@ -317,7 +319,10 @@ public class FrmMain extends javax.swing.JFrame {
         prot.setRequest(1);
         try {
             SendRequest(prot);
-            DisableButton();
+            if(ready==0)
+            {
+                DisableButton();
+            }
         } catch (IOException ex) {
             Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -620,6 +625,7 @@ public class FrmMain extends javax.swing.JFrame {
             Status=1;
             X=-1;
             Y=-1;
+            ready=0;
             CmdConnect.setEnabled(true);
             CmdDisconnect.setEnabled(false);
     }
