@@ -322,6 +322,7 @@ public class FrmMain extends javax.swing.JFrame {
             if(ready==0)
             {
                 DisableButton();
+                ready=1;
             }
         } catch (IOException ex) {
             Logger.getLogger(FrmMain.class.getName()).log(Level.SEVERE, null, ex);
